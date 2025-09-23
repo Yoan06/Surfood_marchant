@@ -2,18 +2,7 @@ import React, { useState, useEffect } from "react";
 import { View, Text, StyleSheet, TextInput, TouchableOpacity, Platform } from "react-native";
 import { useRouter } from "expo-router";
 import * as Location from "expo-location";
-
-// Déclarations vides par défaut
-let MapView: any = null;
-let Marker: any = null;
-
-// ⚡ Import dynamique sécurisé
-if (Platform.OS !== "web") {
-  import("react-native-maps").then((Maps) => {
-    MapView = Maps.default;
-    Marker = Maps.Marker;
-  });
-}
+import MapView, { Marker } from "react-native-maps";
 
 export default function MapScreen() {
   const router = useRouter();
@@ -39,27 +28,7 @@ export default function MapScreen() {
     })();
   }, []);
 
-  // 📌 Version WEB (Google Maps Embed)
-  if (Platform.OS === "web") {
-    return (
-      <View style={{ flex: 1 }}>
-        <iframe
-          width="100%"
-          height="100%"
-          style={{ border: 0 }}
-          loading="lazy"
-          allowFullScreen
-          src={`https://www.google.com/maps/embed/v1/place?key=YOUR_API_KEY&q=Paris,France`}
-        />
-        <TouchableOpacity style={styles.nextButton} onPress={() => router.push("/store-address")}>
-          <Text style={styles.nextText}>Next</Text>
-        </TouchableOpacity>
-      </View>
-    );
-  }
-
-  // 📌 Version MOBILE (React Native Maps)
-  if (!region || !MapView) {
+  if (!region) {
     return (
       <View style={styles.loading}>
         <Text>Loading map...</Text>
